@@ -6,6 +6,7 @@ import PlayButton from './PlayButton';
 import Settings from '../Settings/Settings';
 import Sidebar from './Sidebar';
 import NewsSection from './NewsSection';
+import VideoBackground from './VideoBackground';
 
 interface MainLauncherProps {
   user: any;
@@ -55,7 +56,10 @@ const MainLauncher: React.FC<MainLauncherProps> = ({ user, supabase }) => {
   };
 
   return (
-    <div className="h-full flex modern-background">
+    <div className="h-full flex modern-background relative">
+      {/* Vidéo d'arrière-plan uniquement pour la page d'accueil */}
+      {currentView === 'home' && <VideoBackground />}
+      
       {/* Sidebar à gauche */}
       <Sidebar 
         currentView={currentView} 
@@ -126,37 +130,39 @@ const HomeView: React.FC<{
   onLaunch: () => void;
 }> = ({ serverInfo, gameInstalled, isInstalling, downloadProgress, onInstall, onLaunch }) => {
   return (
-    <div className="h-full p-8 flex flex-col max-w-6xl mx-auto">
-      {/* Header moderne */}
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-        className="mb-12"
-      >
-        <div className="flex items-center gap-4 mb-6">
-          <span className="px-4 py-2 bg-green-500/20 text-green-400 text-sm font-semibold rounded-full border border-green-500/30">
-            LE PLUS POPULAIRE
-          </span>
-          <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-          <span className="text-white/60 text-sm">Serveur en ligne</span>
-        </div>
-        
-        <h1 className="text-title bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent mb-4">
-          AXIS
-        </h1>
-        <p className="text-subtitle max-w-2xl">
-          Le premier serveur MMO RPG français. Découvrez une aventure unique dans un monde 
-          rempli de mystères, de guildes et de territoires à conquérir.
-        </p>
-      </motion.div>
+    <div className="h-full flex flex-col justify-center px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="w-full max-w-5xl">
+        {/* Header avec tag EN LIGNE - responsive */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="mb-8 lg:mb-12"
+        >
+          <div className="flex items-center gap-4 mb-4 lg:mb-6">
+            <span className="px-3 py-1.5 lg:px-4 lg:py-2 bg-green-500/20 text-green-400 text-xs sm:text-sm font-semibold rounded-full border border-green-500/30 flex items-center gap-2 backdrop-blur-md">
+              <div className="w-1.5 h-1.5 lg:w-2 lg:h-2 bg-green-400 rounded-full animate-pulse"></div>
+              EN LIGNE
+            </span>
+          </div>
+          
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent mb-3 lg:mb-4">
+            AXIS
+          </h1>
+          <div className="backdrop-blur-sm bg-black/20 p-3 sm:p-4 rounded-lg max-w-xs sm:max-w-md lg:max-w-2xl">
+            <p className="text-sm sm:text-lg lg:text-xl text-white/90 leading-relaxed">
+              Le premier serveur MMO RPG français. Découvrez une aventure unique dans un monde 
+              rempli de mystères, de guildes et de territoires à conquérir.
+            </p>
+          </div>
+        </motion.div>
 
-      {/* Section principale - Bouton et serveur */}
-      <div className="flex-1 flex flex-col justify-center space-y-8">
+        {/* Bouton de jeu - responsive */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
+          className="mb-6 lg:mb-8"
         >
           <PlayButton
             gameInstalled={gameInstalled}
@@ -167,24 +173,16 @@ const HomeView: React.FC<{
           />
         </motion.div>
 
+        {/* Card Informations serveur - responsive */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
+          className="max-w-full lg:max-w-4xl"
         >
           <ServerInfo serverInfo={serverInfo} />
         </motion.div>
       </div>
-
-      {/* News en bas */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.8 }}
-        className="mt-8"
-      >
-        <NewsSection compact />
-      </motion.div>
     </div>
   );
 };

@@ -14,13 +14,13 @@ function App() {
   const [showMenu] = useState(true);
 
   return (
-    <div className="h-screen w-screen minecraft-background overflow-hidden">
+    <div className="h-screen w-screen minecraft-background overflow-hidden flex flex-col">
       <TitleBar />
-      <div className="h-full pt-8">
+      <div className="flex-1">
         {showMenu ? (
           <MainLauncher user={mockUser} supabase={null} />
         ) : (
-          <div className="h-screen w-screen flex items-center justify-center">
+          <div className="h-full w-full flex items-center justify-center">
             <div className="modern-loader">
               <div className="dot"></div>
               <div className="dot"></div>
