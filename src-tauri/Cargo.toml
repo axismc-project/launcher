@@ -1,0 +1,24 @@
+[package]
+name = "axis-launcher"
+version = "0.1.0"
+description = "Launcher MMO RPG pour le serveur Axis Minecraft"
+authors = ["Axis Team"]
+license = ""
+repository = ""
+edition = "2021"
+
+[build-dependencies]
+tauri-build = { version = "1.5", features = [] }
+
+[dependencies]
+tauri = { version = "1.5", features = [ "window-start-dragging", "window-show", "window-minimize", "window-maximize", "window-hide", "window-unminimize", "window-close", "window-unmaximize", "shell-open", "fs-all", "http-all", "notification-all"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+reqwest = { version = "0.11", features = ["json"] }
+tokio = { version = "1.0", features = ["full"] }
+chrono = { version = "0.4", features = ["serde"] }
+sys-info = "0.9"
+
+[features]
+default = ["custom-protocol"]
+custom-protocol = ["tauri/custom-protocol"]
