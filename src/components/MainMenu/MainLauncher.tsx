@@ -1,3 +1,4 @@
+/* src/components/MainMenu/MainLauncher.tsx */
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ServerInfo from './ServerInfo';
@@ -5,7 +6,6 @@ import PlayButton from './PlayButton';
 import Settings from '../Settings/Settings';
 import Sidebar from './Sidebar';
 import NewsSection from './NewsSection';
-import ShopSection from './ShopSection';
 
 interface MainLauncherProps {
   user: any;
@@ -19,7 +19,7 @@ interface ServerInfoType {
 }
 
 const MainLauncher: React.FC<MainLauncherProps> = ({ user, supabase }) => {
-  const [currentView, setCurrentView] = useState<'home' | 'settings' | 'news' | 'shop'>('home');
+  const [currentView, setCurrentView] = useState<'home' | 'settings' | 'news' | 'map'>('home');
   const [serverInfo, setServerInfo] = useState<ServerInfoType | null>(null);
   const [gameInstalled, setGameInstalled] = useState(false);
   const [isInstalling, setIsInstalling] = useState(false);
@@ -55,7 +55,7 @@ const MainLauncher: React.FC<MainLauncherProps> = ({ user, supabase }) => {
   };
 
   return (
-    <div className="h-full flex">
+    <div className="h-full flex modern-background">
       {/* Sidebar à gauche */}
       <Sidebar 
         currentView={currentView} 
@@ -64,7 +64,7 @@ const MainLauncher: React.FC<MainLauncherProps> = ({ user, supabase }) => {
       />
 
       {/* Contenu principal */}
-      <div className="flex-1 relative">
+      <div className="flex-1 relative overflow-hidden">
         <AnimatePresence mode="wait">
           {currentView === 'home' && (
             <motion.div
@@ -72,7 +72,7 @@ const MainLauncher: React.FC<MainLauncherProps> = ({ user, supabase }) => {
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -50 }}
-              transition={{ duration: 0.4 }}
+              transition={{ duration: 0.4, ease: "easeInOut" }}
               className="h-full"
             >
               <HomeView
@@ -92,7 +92,7 @@ const MainLauncher: React.FC<MainLauncherProps> = ({ user, supabase }) => {
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -50 }}
-              transition={{ duration: 0.4 }}
+              transition={{ duration: 0.4, ease: "easeInOut" }}
               className="h-full"
             >
               <Settings />
@@ -105,23 +105,10 @@ const MainLauncher: React.FC<MainLauncherProps> = ({ user, supabase }) => {
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -50 }}
-              transition={{ duration: 0.4 }}
+              transition={{ duration: 0.4, ease: "easeInOut" }}
               className="h-full"
             >
               <NewsSection />
-            </motion.div>
-          )}
-
-          {currentView === 'shop' && (
-            <motion.div
-              key="shop"
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -50 }}
-              transition={{ duration: 0.4 }}
-              className="h-full"
-            >
-              <ShopSection />
             </motion.div>
           )}
         </AnimatePresence>
@@ -139,25 +126,38 @@ const HomeView: React.FC<{
   onLaunch: () => void;
 }> = ({ serverInfo, gameInstalled, isInstalling, downloadProgress, onInstall, onLaunch }) => {
   return (
-    <div className="h-full p-8 flex flex-col">
-      {/* Header avec logo et badge */}
-      <div className="mb-8">
-        <div className="flex items-center gap-4 mb-4">
-          <span className="px-3 py-1 bg-green-500 text-white text-sm font-medium rounded-full">
+    <div className="h-full p-8 flex flex-col max-w-6xl mx-auto">
+      {/* Header moderne */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="mb-12"
+      >
+        <div className="flex items-center gap-4 mb-6">
+          <span className="px-4 py-2 bg-green-500/20 text-green-400 text-sm font-semibold rounded-full border border-green-500/30">
             LE PLUS POPULAIRE
           </span>
+          <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+          <span className="text-white/60 text-sm">Serveur en ligne</span>
         </div>
-        <h1 className="text-6xl font-bold text-white modern-font mb-2">
+        
+        <h1 className="text-title bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent mb-4">
           AXIS
         </h1>
-        <p className="text-xl text-white/80 modern-font">
-          Axis est le premier serveur MMO RPG français. Nous proposons une aventure exclusive sur Minecraft !
+        <p className="text-subtitle max-w-2xl">
+          Le premier serveur MMO RPG français. Découvrez une aventure unique dans un monde 
+          rempli de mystères, de guildes et de territoires à conquérir.
         </p>
-      </div>
+      </motion.div>
 
-      {/* Section principale avec bouton et sélecteur */}
-      <div className="flex-1 flex flex-col justify-center">
-        <div className="mb-8">
+      {/* Section principale - Bouton et serveur */}
+      <div className="flex-1 flex flex-col justify-center space-y-8">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+        >
           <PlayButton
             gameInstalled={gameInstalled}
             isInstalling={isInstalling}
@@ -165,24 +165,26 @@ const HomeView: React.FC<{
             onInstall={onInstall}
             onLaunch={onLaunch}
           />
-          
-          {/* Sélecteur de serveur */}
-          <div className="mt-4 w-80">
-            <select className="w-full p-3 glass-card-dark text-white rounded-lg modern-input">
-              <option>🏛️ Axis</option>
-            </select>
-          </div>
-        </div>
+        </motion.div>
 
-        {/* Informations serveur */}
-        <ServerInfo serverInfo={serverInfo} />
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+        >
+          <ServerInfo serverInfo={serverInfo} />
+        </motion.div>
       </div>
 
-      {/* Section news et shop en bas */}
-      <div className="grid grid-cols-2 gap-8 mt-8">
+      {/* News en bas */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.8 }}
+        className="mt-8"
+      >
         <NewsSection compact />
-        <ShopSection compact />
-      </div>
+      </motion.div>
     </div>
   );
 };
