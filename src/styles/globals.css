@@ -124,10 +124,10 @@ body {
       rgba(6, 10, 18, 0.95) 50%,
       rgba(4, 8, 16, 0.95) 100%);
   backdrop-filter: blur(24px);
-  border-right: 1px solid rgba(0, 255, 127, 0.08);
+  border-right: 1px solid rgba(19, 19, 19, 0.08);
   box-shadow: 
-    2px 0 24px rgba(0, 0, 0, 0.5),
-    inset -1px 0 0 rgba(0, 255, 127, 0.02);
+    2px 0 24px rgba(19, 19, 19, 0.5),
+    inset -1px 0 0 rgba(34, 34, 34, 0.02);
   position: relative;
 }
 
@@ -363,8 +363,8 @@ body {
   background: rgba(0, 255, 127, 0.1);
   border-color: hsl(var(--primary));
   box-shadow: 
-    0 4px 16px 0 rgba(0, 255, 127, 0.2),
-    inset 0 1px 0 rgba(0, 255, 127, 0.1);
+    0 4px 16px 0 rgba(31, 31, 31, 0.2),
+    inset 0 1px 0 rgba(45, 45, 45, 0.1);
 }
 
 /* Animations fluides */
@@ -528,7 +528,7 @@ html, body {
   background: linear-gradient(135deg, hsl(150, 100%, 45%), hsl(150, 100%, 35%));
   cursor: pointer;
   border: 2px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 4px 12px rgba(0, 255, 127, 0.3);
+  box-shadow: 0 4px 12px rgba(62, 62, 62, 0.3);
   transition: all 0.3s ease;
 }
 
