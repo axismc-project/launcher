@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { VolumeX, Volume2, Music, Play, Pause } from 'lucide-react';
+import { VolumeX, Volume2, Play, Pause } from 'lucide-react';
 
 const MusicPlayer: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false);

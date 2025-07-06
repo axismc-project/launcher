@@ -6,7 +6,6 @@ import {
   Settings, 
   Newspaper, 
   Map,
-  User,
   Bell,
   LogOut 
 } from 'lucide-react';
@@ -14,10 +13,9 @@ import {
 interface SidebarProps {
   currentView: string;
   setCurrentView: (view: 'home' | 'settings' | 'news' | 'map') => void;
-  user: any;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ currentView, setCurrentView, user }) => {
+const Sidebar: React.FC<SidebarProps> = ({ currentView, setCurrentView }) => {
   const menuItems = [
     { id: 'home', icon: Home, label: 'Accueil' },
     { id: 'news', icon: Newspaper, label: 'Actualités' },

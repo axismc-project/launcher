@@ -15,8 +15,7 @@ import {
   Eye,
   ExternalLink,
   Folder,
-  Save,
-  Check
+  Save
 } from 'lucide-react';
 
 interface GameSettings {

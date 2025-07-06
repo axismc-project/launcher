@@ -1,14 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import MainLauncher from './components/MainMenu/MainLauncher';
 import TitleBar from './components/Common/TitleBar';
-
-const mockUser = {
-  id: 'test-user-123',
-  email: 'test@axis.com',
-  user_metadata: {
-    name: 'Test Player'
-  }
-};
 
 function App() {
   const [showMenu] = useState(true);
@@ -18,7 +10,7 @@ function App() {
       <TitleBar />
       <div className="flex-1">
         {showMenu ? (
-          <MainLauncher user={mockUser} supabase={null} />
+          <MainLauncher />
         ) : (
           <div className="h-full w-full flex items-center justify-center">
             <div className="modern-loader">
