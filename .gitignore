@@ -32,3 +32,8 @@ src-tauri/target
 .env.development.local
 .env.test.local
 .env.production.local
+
+# Lock files - éviter les conflits CI/CD
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
