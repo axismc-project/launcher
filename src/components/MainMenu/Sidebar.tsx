@@ -27,14 +27,14 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setCurrentView, user }) 
 
   return (
     <div className="w-16 sm:w-20 modern-sidebar h-full flex flex-col items-center py-4 sm:py-6 relative">
-      {/* Avatar utilisateur - responsive */}
+      {/* Avatar utilisateur - avec bordure grise */}
       <motion.div
         initial={{ scale: 0, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ delay: 0.2 }}
         className="relative mb-6 sm:mb-8"
       >
-        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-gradient-to-br from-green-400 to-green-600 p-0.5">
+        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-gradient-to-br from-gray-400 to-gray-600 p-0.5">
           <div className="w-full h-full rounded-xl sm:rounded-2xl bg-gray-900 flex items-center justify-center">
             <img 
               src="https://crafatar.com/avatars/steve?size=64&default=MHF_Steve&overlay" 
@@ -46,7 +46,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setCurrentView, user }) 
         <div className="absolute -bottom-1 -right-1 w-3 h-3 sm:w-4 sm:h-4 bg-green-500 rounded-full border-2 border-gray-900"></div>
       </motion.div>
 
-      {/* Menu items - responsive */}
+      {/* Menu items - avec style gris */}
       <div className="flex flex-col gap-1.5 sm:gap-2 flex-1">
         {menuItems.map((item, index) => (
           <motion.button
@@ -58,7 +58,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setCurrentView, user }) 
             className={`
               relative w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center transition-all duration-300 group
               ${currentView === item.id 
-                ? 'bg-green-500/20 text-green-400 shadow-lg shadow-green-500/20' 
+                ? 'bg-gray-500/20 text-gray-400 shadow-lg shadow-gray-500/20' 
                 : 'text-white/60 hover:text-white hover:bg-white/5'
               }
             `}
@@ -67,7 +67,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setCurrentView, user }) 
             {currentView === item.id && (
               <motion.div
                 layoutId="activeTab"
-                className="absolute inset-0 bg-green-500/20 rounded-xl sm:rounded-2xl border border-green-500/30"
+                className="absolute inset-0 bg-gray-500/20 rounded-xl sm:rounded-2xl border border-gray-500/30"
               />
             )}
             <item.icon size={16} className="sm:w-5 sm:h-5 relative z-10" />
@@ -75,7 +75,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setCurrentView, user }) 
         ))}
       </div>
 
-      {/* Notifications - responsive */}
+      {/* Notifications */}
       <motion.button
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -87,7 +87,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setCurrentView, user }) 
         <div className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2 w-1.5 h-1.5 sm:w-2 sm:h-2 bg-red-500 rounded-full"></div>
       </motion.button>
 
-      {/* Logout - responsive */}
+      {/* Logout */}
       <motion.button
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
