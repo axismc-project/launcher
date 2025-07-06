@@ -11,18 +11,16 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       release_id: ${{ steps.create-release.outputs.result }}
+      upload_url: ${{ steps.create-release.outputs.upload_url }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-
-      - name: Get version
-        run: echo "PACKAGE_VERSION=$(node -pe "require('./package.json').version")" >> $GITHUB_ENV
+      - name: Get version from tag
+        id: tag_version
+        run: |
+          echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
 
       - name: Create release
         id: create-release
@@ -32,9 +30,36 @@ jobs:
             const { data } = await github.rest.repos.createRelease({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              tag_name: `v${process.env.PACKAGE_VERSION}`,
-              name: `Axis Launcher v${process.env.PACKAGE_VERSION}`,
-              body: 'Nouvelle version d\'Axis Launcher avec améliorations et corrections.',
+              tag_name: context.ref.replace('refs/tags/', ''),
+              name: `Axis Launcher v${{ steps.tag_version.outputs.VERSION }}`,
+              body: `
+            ## 🚀 Axis Launcher v${{ steps.tag_version.outputs.VERSION }}
+            
+            ### ✨ Nouveautés
+            - Interface utilisateur moderne et élégante
+            - Système de création de personnage avec 4 races et 8 classes
+            - Gestion des comptes et paramètres avancés
+            - Support multi-plateforme (Windows, macOS, Linux)
+            
+            ### 📥 Installation
+            - **Windows**: Téléchargez le fichier \`.msi\` pour l'installateur ou \`.exe\` pour la version portable
+            - **macOS**: Téléchargez le fichier \`.dmg\` et glissez l'app dans Applications
+            - **Linux**: Téléchargez le fichier \`.AppImage\` ou \`.deb\` selon votre distribution
+            
+            ### 🔧 Configuration requise
+            - **Windows**: Windows 10 ou plus récent
+            - **macOS**: macOS 10.15 (Catalina) ou plus récent
+            - **Linux**: Distribution compatible avec GTK 3
+            
+            ### 🐛 Corrections
+            - Amélioration de la stabilité générale
+            - Optimisation des performances
+            - Correction de bugs mineurs
+            
+            ---
+            **Checksum des fichiers** : Voir les assets ci-dessous
+            **Build** : ${context.sha.substring(0, 7)}
+              `,
               draft: false,
               prerelease: false
             })
@@ -51,15 +76,12 @@ jobs:
           - platform: 'macos-latest'
             os: 'macos-latest'
             target: 'universal-apple-darwin'
-            arch: 'universal'
           - platform: 'ubuntu-20.04'
             os: 'ubuntu-20.04'
             target: 'x86_64-unknown-linux-gnu'
-            arch: 'x86_64'
           - platform: 'windows-latest'
             os: 'windows-latest'
             target: 'x86_64-pc-windows-msvc'
-            arch: 'x86_64'
 
     steps:
       - name: Checkout repository
@@ -69,7 +91,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          cache: 'npm'
 
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
@@ -88,7 +109,7 @@ jobs:
           sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev libappindicator3-dev librsvg2-dev patchelf
 
       - name: Install frontend dependencies
-        run: npm ci
+        run: npm install
 
       - name: Build Tauri app
         uses: tauri-apps/tauri-action@v0
@@ -100,19 +121,3 @@ jobs:
           releaseId: ${{ needs.create-release.outputs.release_id }}
           includeDebug: false
           includeRelease: true
-
-  update-release:
-    name: Update Release
-    runs-on: ubuntu-latest
-    needs: [create-release, build-tauri]
-    steps:
-      - name: Update release
-        uses: actions/github-script@v7
-        with:
-          script: |
-            await github.rest.repos.updateRelease({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              release_id: ${{ needs.create-release.outputs.release_id }},
-              draft: false
-            })

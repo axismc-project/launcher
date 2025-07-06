@@ -3,8 +3,13 @@ name: "Build and Release"
 on:
   push:
     branches: [ main, develop ]
+    tags: [ 'v*' ]
   pull_request:
     branches: [ main ]
+
+env:
+  TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
+  TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
 
 jobs:
   test:
@@ -32,17 +37,22 @@ jobs:
     name: Build Tauri (${{ matrix.platform }})
     runs-on: ${{ matrix.os }}
     needs: test
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     strategy:
       fail-fast: false
       matrix:
         include:
           - platform: 'macos-latest'
             os: 'macos-latest'
+            arch: 'universal'
+            target: 'universal-apple-darwin'
           - platform: 'ubuntu-20.04'
             os: 'ubuntu-20.04'
+            arch: 'x86_64'
+            target: 'x86_64-unknown-linux-gnu'
           - platform: 'windows-latest'
             os: 'windows-latest'
+            arch: 'x86_64'
+            target: 'x86_64-pc-windows-msvc'
 
     steps:
       - name: Checkout repository
@@ -55,6 +65,8 @@ jobs:
 
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
 
       - name: Rust cache
         uses: swatinem/rust-cache@v2
@@ -75,8 +87,24 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tagName: app-v__VERSION__
-          releaseName: 'Axis Launcher v__VERSION__'
-          releaseBody: 'Voir le changelog pour les détails.'
-          releaseDraft: true
-          prerelease: false
+          tagName: ${{ github.ref_type == 'tag' && github.ref_name || format('app-v{0}', github.run_number) }}
+          releaseName: 'Axis Launcher ${{ github.ref_type == 'tag' && github.ref_name || format('v1.0.{0}', github.run_number) }}'
+          releaseBody: |
+            ## 🚀 Axis Launcher
+            
+            ### 📥 Installation
+            - **Windows**: Téléchargez le fichier `.msi` ou `.exe`
+            - **macOS**: Téléchargez le fichier `.dmg`
+            - **Linux**: Téléchargez le fichier `.AppImage` ou `.deb`
+            
+            ### 🐛 Corrections
+            - Diverses corrections de bugs
+            - Amélioration de la stabilité
+            
+            ---
+            Build: ${{ github.sha }}
+            Platform: ${{ matrix.platform }}
+          releaseDraft: ${{ github.ref_type != 'tag' }}
+          prerelease: ${{ contains(github.ref_name, 'alpha') || contains(github.ref_name, 'beta') }}
+          includeDebug: false
+          includeRelease: true
