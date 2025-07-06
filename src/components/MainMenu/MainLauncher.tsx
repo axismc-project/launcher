@@ -1,12 +1,11 @@
 /* src/components/MainMenu/MainLauncher.tsx */
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import ServerInfo from './ServerInfo';
-import PlayButton from './PlayButton';
 import Settings from '../Settings/Settings';
 import Sidebar from './Sidebar';
 import NewsSection from './NewsSection';
 import VideoBackground from './VideoBackground';
+import PlayButton from './PlayButton';
 
 interface MainLauncherProps {
   user: any;
@@ -25,6 +24,7 @@ const MainLauncher: React.FC<MainLauncherProps> = ({ user, supabase }) => {
   const [gameInstalled, setGameInstalled] = useState(false);
   const [isInstalling, setIsInstalling] = useState(false);
   const [downloadProgress, setDownloadProgress] = useState(0);
+  const [downloadSpeed, setDownloadSpeed] = useState('0 MB/s');
 
   useEffect(() => {
     const fetchServerInfo = () => {
@@ -42,8 +42,11 @@ const MainLauncher: React.FC<MainLauncherProps> = ({ user, supabase }) => {
 
   const handleInstallGame = async () => {
     setIsInstalling(true);
+    const speeds = ['12.3 MB/s', '15.7 MB/s', '18.2 MB/s', '14.5 MB/s', '16.8 MB/s'];
+    
     for (let i = 0; i <= 100; i += 5) {
       setDownloadProgress(i);
+      setDownloadSpeed(speeds[Math.floor(Math.random() * speeds.length)]);
       await new Promise(resolve => setTimeout(resolve, 100));
     }
     setGameInstalled(true);
@@ -84,6 +87,7 @@ const MainLauncher: React.FC<MainLauncherProps> = ({ user, supabase }) => {
                 gameInstalled={gameInstalled}
                 isInstalling={isInstalling}
                 downloadProgress={downloadProgress}
+                downloadSpeed={downloadSpeed}
                 onInstall={handleInstallGame}
                 onLaunch={handleLaunchGame}
               />
@@ -126,61 +130,82 @@ const HomeView: React.FC<{
   gameInstalled: boolean;
   isInstalling: boolean;
   downloadProgress: number;
+  downloadSpeed: string;
   onInstall: () => void;
   onLaunch: () => void;
-}> = ({ serverInfo, gameInstalled, isInstalling, downloadProgress, onInstall, onLaunch }) => {
+}> = ({ serverInfo, gameInstalled, isInstalling, downloadProgress, downloadSpeed, onInstall, onLaunch }) => {
   return (
-    <div className="h-full flex flex-col justify-center px-4 sm:px-6 lg:px-8 relative z-10">
-      <div className="w-full max-w-5xl">
-        {/* Header avec tag EN LIGNE - responsive */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="mb-8 lg:mb-12"
-        >
-          <div className="flex items-center gap-4 mb-4 lg:mb-6">
-            <span className="px-3 py-1.5 lg:px-4 lg:py-2 bg-green-500/20 text-green-400 text-xs sm:text-sm font-semibold rounded-full border border-green-500/30 flex items-center gap-2 backdrop-blur-md">
-              <div className="w-1.5 h-1.5 lg:w-2 lg:h-2 bg-green-400 rounded-full animate-pulse"></div>
-              EN LIGNE
-            </span>
+    <div className="h-full flex flex-col relative z-10">
+      {/* Header en haut à gauche */}
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="absolute top-6 left-8 z-20"
+      >
+        <div className="glass-card-dark p-4 rounded-xl backdrop-blur-md border border-white/20">
+          <div className="text-xs text-green-400 font-medium mb-1 tracking-wide">
+            Alpha 0.0.1 - Version de développement
           </div>
-          
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent mb-3 lg:mb-4">
-            AXIS
-          </h1>
-          <div className="backdrop-blur-sm bg-black/20 p-3 sm:p-4 rounded-lg max-w-xs sm:max-w-md lg:max-w-2xl">
-            <p className="text-sm sm:text-lg lg:text-xl text-white/90 leading-relaxed">
-              Le premier serveur MMO RPG français. Découvrez une aventure unique dans un monde 
-              rempli de mystères, de guildes et de territoires à conquérir.
+          <div className="flex items-center gap-3">
+            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+            <h1 className="text-2xl font-bold text-white">AXIS</h1>
+            <span className="text-green-400 text-lg font-semibold">ONLINE</span>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Zone du bas avec infos et bouton */}
+      <div className="absolute bottom-0 left-0 right-0 p-8 flex justify-between items-end">
+        {/* Infos de localisation à gauche */}
+        <motion.div
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.4 }}
+          className="space-y-4 max-w-md"
+        >
+          {/* Résidence principale */}
+          <div className="glass-card-dark p-4 rounded-xl backdrop-blur-md border border-white/20">
+            <div className="text-xs text-white/60 font-medium mb-2 uppercase tracking-wide">
+              Résidence principale
+            </div>
+            <h3 className="text-xl font-bold text-white mb-2">Cité d'Émeraude</h3>
+            <p className="text-white/80 text-sm leading-relaxed">
+              La capitale prospère du royaume d'Axis, connue pour ses tours de cristal 
+              et ses jardins flottants. Centre névralgique du commerce et de la magie, 
+              elle accueille les aventuriers du monde entier dans ses murs protecteurs.
+            </p>
+          </div>
+
+          {/* Localisation actuelle */}
+          <div className="glass-card-dark p-4 rounded-xl backdrop-blur-md border border-white/20">
+            <div className="text-xs text-white/60 font-medium mb-2 uppercase tracking-wide">
+              Localisation actuelle
+            </div>
+            <h3 className="text-xl font-bold text-white mb-2">Taverne du Dragon d'Or</h3>
+            <p className="text-white/80 text-sm leading-relaxed">
+              Un lieu de rencontre chaleureux au cœur de la cité. Les aventuriers 
+              s'y retrouvent pour partager leurs histoires, former des groupes 
+              et planifier leurs prochaines quêtes autour d'une bonne bière.
             </p>
           </div>
         </motion.div>
 
-        {/* Bouton de jeu - responsive */}
+        {/* Bouton Play à droite */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="mb-6 lg:mb-8"
+          initial={{ opacity: 0, x: 30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.6 }}
+          className="flex flex-col items-end"
         >
           <PlayButton
             gameInstalled={gameInstalled}
             isInstalling={isInstalling}
             downloadProgress={downloadProgress}
+            downloadSpeed={downloadSpeed}
             onInstall={onInstall}
             onLaunch={onLaunch}
           />
-        </motion.div>
-
-        {/* Card Informations serveur - responsive */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="max-w-full lg:max-w-4xl"
-        >
-          <ServerInfo serverInfo={serverInfo} />
         </motion.div>
       </div>
     </div>
