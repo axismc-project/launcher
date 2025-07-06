@@ -49,6 +49,7 @@
       "active": true,
       "targets": "all",
       "identifier": "com.axis.launcher"
+
     },
     "security": {
       "csp": null
